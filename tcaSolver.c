@@ -790,6 +790,15 @@ int main(int argc, char **argv)
     }
   }
 
+  PetscBool           write_output=PETSC_TRUE;
+  if (write_output) {
+    PetscViewer viewer;
+    char               vtkfilename[PETSC_MAX_PATH_LEN] = "mjonestest.vtk";
+    ierr = PetscViewerVTKOpen(PETSC_COMM_WORLD,vtkfilename,FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+    ierr = VecView(r,viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+  }
+
   if (user.bcType == NEUMANN) {
     ierr = MatNullSpaceDestroy(&nullSpace);CHKERRQ(ierr);
   }
