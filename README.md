@@ -15,7 +15,13 @@ gdb --args ./tcaSolver -run_type test -dim 3 -refinement_limit 0.0125 -variable_
 
 ------------ Useful Commands ------------
 
+cntl V -> arrows    : visual block
+
 yy  - copy
+7yy - copy  7  lines:
+9yy - copy  9  lines:
+21yy- copy  21 lines:
+
 p   - paste
 
 
@@ -25,3 +31,11 @@ esc  exits writ mode
 :w  saves
 
 cntl w  - j/k  up/down
+
+
+
+-----------------   git commands ----------------
+
+save locally: git commit
+
+push to github: git push -u
