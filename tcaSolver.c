@@ -1,7 +1,7 @@
 static char help[] = "Poisson Problem in 2d and 3d with simplicial finite elements.\n\
 We solve the Poisson problem in a rectangular\n\
 domain, using a parallel unstructured mesh (DMPLEX) to discretize it.\n\n\n";
-//#include <cmath>
+#include <math.h>
 #include <petscdmplex.h>
 #include <petscsnes.h>
 #if defined(PETSC_HAVE_EXODUSII)
@@ -84,12 +84,11 @@ void quadratic_u_2d(const PetscReal x[], PetscScalar *u, void *ctx)
 /*Routine to put a point source into the cube/liver */
 void f0_u(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a[], const PetscScalar gradA[], const PetscReal x[], PetscScalar f0[])
 {
+  if(x[0]<=.5+pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[2]-.8)*(x[2]-.8)),.5) && x[0]>=.5-pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[2]-.8)*(x[2]-.8)),.5) && x[1]<=.7+pow((.01*.01)-((x[0]-.5)*(x[0]-.5))-((x[2]-.8)*(x[2]-.8)),.5) && x[1]>=.7-pow((.01*.01)-((x[0]-.5)*(x[0]-.5))-((x[2]-.8)*(x[2]-.8)),.5) && x[2]<=.8+pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[0]-.5)*(x[0]-.5)),.5) && x[2]>=.8-pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[0]-.5)*(x[0]-.5)),.5) ){
+  f0[0] = 45.0;
+}else{
 f0[0] = 4.0;
-//  if(x[0]<=.5+pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[2]-.8)*(x[2]-.8)),.5) && x[0]>=.5-pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[2]-.8)*(x[2]-.8)),.5) && x[1]<=.7+pow((.01*.01)-((x[0]-.5)*(x[0]-.5))-((x[2]-.8)*(x[2]-.8)),.5) && x[1]>=.7-pow((.01*.01)-((x[0]-.5)*(x[0]-.5))-((x[2]-.8)*(x[2]-.8)),.5) && x[2]<=.8+pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[0]-.5)*(x[0]-.5)),.5) && x[2]>=.8-pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[0]-.5)*(x[0]-.5)),.5) ){
-//  f0[0] = 45.0;
-//}else{
-//f0[0] = 4.0;
-//}
+}
 }
 
 void f0_bd_u(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a[], const PetscScalar gradA[], const PetscReal x[], const PetscReal n[], PetscScalar f0[])
