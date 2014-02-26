@@ -1,0 +1,11 @@
+How do we input an auxillary field so that we can use the a[] array
+in the f0_u function in ex12.c ?
+
+void f0_u(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a[], const PetscScalar gradA[], const PetscReal x[], PetscScalar f0[])
+
+I would like a=constant within a bounded volume 
+and a=0 outside the bounded volume.
+
+
+
+
