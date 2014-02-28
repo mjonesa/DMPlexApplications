@@ -89,6 +89,7 @@ void f0_u(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a[
 }else{
 f0[0] = 4.0;
 }
+ f0[0] = a[0];
 }
 
 void f0_bd_u(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a[], const PetscScalar gradA[], const PetscReal x[], const PetscReal n[], PetscScalar f0[])
@@ -127,6 +128,12 @@ void g3_uu(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a
   for (d = 0; d < spatialDim; ++d) g3[d*spatialDim+d] = 1.0;
 }
 
+PetscBool StlBoundary(const PetscReal x[])
+  {
+    return PETSC_TRUE;
+    return PETSC_FALSE;
+  }
+
 /*
   In 2D for Dirichlet conditions with a variable coefficient, we use exact solution:
 
@@ -141,6 +148,15 @@ void g3_uu(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a
 void nu_2d(const PetscReal x[], PetscScalar *u, void *ctx)
 {
   *u = x[0] + x[1];
+  // set to 42 if inside boundary
+  if ( StlBoundary(x) )
+   {
+     *u = 42.;
+   }
+  else
+   {
+     *u = 0.;
+   }
 }
 
 void f0_analytic_u(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a[], const PetscScalar gradA[], const PetscReal x[], PetscScalar f0[])
