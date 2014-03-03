@@ -129,47 +129,57 @@ void g3_uu(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a
 }
 
     /* a_tri = b_tri - c_tri */
-/*Read in and pre-process STL file  */
-#define vector(a_tri,b_tri,c_tri) \
-	(a_tri)[0] = (b_tri)[0] - (c_tri)[0];	\
-	(a_tri)[1] = (b_tri)[1] - (c_tri)[1];	\
-	(a_tri)[2] = (b_tri)[2] - (c_tri)[2];
 
-//PetscBool StlBoundary(float *p, float *d,
-//			float *v0, float *v1, float *v2) {
-//
-//	float e1[3],e2[3],h[3],s[3],q[3];
-//	float a,f,u,v;
-//	vector(e1,v1,v0);
-//	vector(e2,v2,v0);
-//
-//	crossProduct(h,d,e2);
-//	a = innerProduct(e1,h);
-//
-//	if (a > -0.00001 && a < 0.00001)
-//		return PETSC_FALSE;
-//
-//	f = 1/a;
-//	vector(s,p,v0);
-//	u = f * (innerProduct(s,h));
-//
-//	if (u < 0.0 || u > 1.0)
-//		return PETSC_FALSE;
-//
-//	crossProduct(q,s,e1);
-//	v = f * innerProduct(d,q);
-//
-//	if (v < 0.0 || u + v > 1.0)
-//		return PETSC_FALSE;
-//
-//	// at this stage we can compute t to find out where
-//	// the intersection point is on the line
-//	double t = f * innerProduct(e2,q);
-//
-//	if (t > 0.00001) // ray intersection
-//		return PETSC_TRUE;
-//    return PETSC_FALSE;
-//  }
+#define vector(a,b,c) \
+	(a)[0] = (b)[0] - (c)[0];	\
+	(a)[1] = (b)[1] - (c)[1];	\
+	(a)[2] = (b)[2] - (c)[2];
+
+#define crossProduct(a,b,c) \
+	(a)[0] = (b)[1] * (c)[2] - (c)[1] * (b)[2]; \
+	(a)[1] = (b)[2] * (c)[0] - (c)[2] * (b)[0]; \
+	(a)[2] = (b)[0] * (c)[1] - (c)[0] * (b)[1];
+
+#define innerProduct(v,q) \
+		((v)[0] * (q)[0] + \
+		(v)[1] * (q)[1] + \
+		(v)[2] * (q)[2])
+
+PetscBool StlBoundary(float *p, float *d,
+			float *v0, float *v1, float *v2) {
+
+	float e1[3],e2[3],h[3],s[3],q[3];
+	float a,f,u,v;
+	vector(e1,v1,v0);
+	vector(e2,v2,v0);
+
+	crossProduct(h,d,e2);
+	a = innerProduct(e1,h);
+
+	if (a > -0.00001 && a < 0.00001)
+		return PETSC_FALSE;
+
+	f = 1/a;
+	vector(s,p,v0);
+	u = f * (innerProduct(s,h));
+
+	if (u < 0.0 || u > 1.0)
+		return PETSC_FALSE;
+
+	crossProduct(q,s,e1);
+	v = f * innerProduct(d,q);
+
+	if (v < 0.0 || u + v > 1.0)
+		return PETSC_FALSE;
+
+	// at this stage we can compute t to find out where
+	// the intersection point is on the line
+	double t = f * innerProduct(e2,q);
+
+	if (t > 0.00001) // ray intersection
+		return PETSC_TRUE;
+
+  }
 
 /*
   In 2D for Dirichlet conditions with a variable coefficient, we use exact solution:
