@@ -135,43 +135,41 @@ void g3_uu(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a
 	(a_tri)[1] = (b_tri)[1] - (c_tri)[1];	\
 	(a_tri)[2] = (b_tri)[2] - (c_tri)[2];
 
-PetscBool StlBoundary(float *p, float *d,
-			float *v0, float *v1, float *v2) {
-
-	float e1[3],e2[3],h[3],s[3],q[3];
-	float a,f,u,v;
-	vector(e1,v1,v0);
-	vector(e2,v2,v0);
-
-	crossProduct(h,d,e2);
-	a = innerProduct(e1,h);
-
-	if (a > -0.00001 && a < 0.00001)
-		return(false);
-
-	f = 1/a;
-	vector(s,p,v0);
-	u = f * (innerProduct(s,h));
-
-	if (u < 0.0 || u > 1.0)
-		return(false);
-
-	crossProduct(q,s,e1);
-	v = f * innerProduct(d,q);
-
-	if (v < 0.0 || u + v > 1.0)
-		return(false);
-
-	// at this stage we can compute t to find out where
-	// the intersection point is on the line
-	t = f * innerProduct(e2,q);
-
-	if (t > 0.00001) // ray intersection
-		return(true);
-
-    return PETSC_TRUE;
-    return PETSC_FALSE;
-  }
+//PetscBool StlBoundary(float *p, float *d,
+//			float *v0, float *v1, float *v2) {
+//
+//	float e1[3],e2[3],h[3],s[3],q[3];
+//	float a,f,u,v;
+//	vector(e1,v1,v0);
+//	vector(e2,v2,v0);
+//
+//	crossProduct(h,d,e2);
+//	a = innerProduct(e1,h);
+//
+//	if (a > -0.00001 && a < 0.00001)
+//		return PETSC_FALSE;
+//
+//	f = 1/a;
+//	vector(s,p,v0);
+//	u = f * (innerProduct(s,h));
+//
+//	if (u < 0.0 || u > 1.0)
+//		return PETSC_FALSE;
+//
+//	crossProduct(q,s,e1);
+//	v = f * innerProduct(d,q);
+//
+//	if (v < 0.0 || u + v > 1.0)
+//		return PETSC_FALSE;
+//
+//	// at this stage we can compute t to find out where
+//	// the intersection point is on the line
+//	double t = f * innerProduct(e2,q);
+//
+//	if (t > 0.00001) // ray intersection
+//		return PETSC_TRUE;
+//    return PETSC_FALSE;
+//  }
 
 /*
   In 2D for Dirichlet conditions with a variable coefficient, we use exact solution:
@@ -188,9 +186,25 @@ void nu_2d(const PetscReal x[], PetscScalar *u, void *ctx)
 {
   *u = x[0] + x[1];
   // set to 42 if inside boundary
-  if ( StlBoundary(x) )
+  //if ( StlBoundary(x) )
+  if ( x[0] > .5 )
    {
      *u = 42.;
+   }
+  else
+   {
+     *u = 0.;
+   }
+}
+
+void test_2d(const PetscReal x[], PetscScalar *u, void *ctx)
+{
+  *u = x[0] + x[1];
+  // set to 42 if inside boundary
+  //if ( StlBoundary(x) )
+  if ( PETSC_TRUE )
+   {
+     *u = 57.;
    }
   else
    {
@@ -682,7 +696,7 @@ PetscErrorCode SetupMaterialSection(DM dm, AppCtx *user)
 #define __FUNCT__ "SetupMaterial"
 PetscErrorCode SetupMaterial(DM dm, DM dmAux, AppCtx *user)
 {
-  void (*matFuncs[1])(const PetscReal x[], PetscScalar *u, void *ctx) = {nu_2d};
+  void (*matFuncs[2])(const PetscReal x[], PetscScalar *u, void *ctx) = {nu_2d,test_2d};
   Vec            nu;
   PetscErrorCode ierr;
 
@@ -867,6 +881,15 @@ int main(int argc, char **argv)
     ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
   }
 
+  if (write_output) {
+    PetscViewer viewer;
+    Vec               A;
+    ierr = PetscObjectQuery((PetscObject) dm, "A", (PetscObject *) &A);CHKERRQ(ierr);
+    char               vtkfilename[PETSC_MAX_PATH_LEN] = "mjonesmat.vtk";
+    ierr = PetscViewerVTKOpen(PETSC_COMM_WORLD,vtkfilename,FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+    ierr = VecView(A,viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+  }
   if (user.bcType == NEUMANN) {
     ierr = MatNullSpaceDestroy(&nullSpace);CHKERRQ(ierr);
   }
