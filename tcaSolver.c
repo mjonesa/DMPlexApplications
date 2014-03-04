@@ -2,11 +2,16 @@ static char help[] = "Poisson Problem in 2d and 3d with simplicial finite elemen
 We solve the Poisson problem in a rectangular\n\
 domain, using a parallel unstructured mesh (DMPLEX) to discretize it.\n\n\n";
 #include <math.h>
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
 #include <petscdmplex.h>
 #include <petscsnes.h>
 #if defined(PETSC_HAVE_EXODUSII)
 #include <exodusII.h>
 #endif
+
+using namespace std;
 
 #define NUM_FIELDS 1
 PetscInt spatialDim = 0;
@@ -218,7 +223,22 @@ void test_2d(const PetscReal x[], PetscScalar *u, void *ctx)
   d[1]=0;
   d[2]=1;
   //Read in STL file //
+  ifstream myfile;
+  myfile.open("martintest.stl");
+
+  for (int i=0; !myfile.eof();i++){
   
+  char str1[1],str2[1],str3[1],str4[1];
+  char str5[9];
+  float v0[3],v1[3],v2[3];
+  myfile>>str1;
+  myfile>>str2;
+  myfile>>str3;
+  myfile>>str4;
+  myfile>>str5>>v0[0]>>v0[1]>>v0[2];
+  myfile>>str5>>v1[0]>>v1[1]>>v1[2];
+  myfile>>str5>>v2[0]>>v2[1]>>v2[2];
+
   if ( StlBoundary(p,d,v0,v1,v2) )
    {
      *u = 57.;
@@ -228,6 +248,7 @@ void test_2d(const PetscReal x[], PetscScalar *u, void *ctx)
      *u = 0.;
    }
 }
+myfile.close();}
 
 void f0_analytic_u(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a[], const PetscScalar gradA[], const PetscReal x[], PetscScalar f0[])
 {
