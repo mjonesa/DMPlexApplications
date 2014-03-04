@@ -89,12 +89,12 @@ void quadratic_u_2d(const PetscReal x[], PetscScalar *u, void *ctx)
 /*Routine to put a point source into the cube/liver */
 void f0_u(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a[], const PetscScalar gradA[], const PetscReal x[], PetscScalar f0[])
 {
-  if(x[0]<=.5+pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[2]-.8)*(x[2]-.8)),.5) && x[0]>=.5-pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[2]-.8)*(x[2]-.8)),.5) && x[1]<=.7+pow((.01*.01)-((x[0]-.5)*(x[0]-.5))-((x[2]-.8)*(x[2]-.8)),.5) && x[1]>=.7-pow((.01*.01)-((x[0]-.5)*(x[0]-.5))-((x[2]-.8)*(x[2]-.8)),.5) && x[2]<=.8+pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[0]-.5)*(x[0]-.5)),.5) && x[2]>=.8-pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[0]-.5)*(x[0]-.5)),.5) ){
-  f0[0] = 45.0;
-}else{
-f0[0] = 4.0;
-}
- f0[0] = a[0];
+ // if(x[0]<=.5+pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[2]-.8)*(x[2]-.8)),.5) && x[0]>=.5-pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[2]-.8)*(x[2]-.8)),.5) && x[1]<=.7+pow((.01*.01)-((x[0]-.5)*(x[0]-.5))-((x[2]-.8)*(x[2]-.8)),.5) && x[1]>=.7-pow((.01*.01)-((x[0]-.5)*(x[0]-.5))-((x[2]-.8)*(x[2]-.8)),.5) && x[2]<=.8+pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[0]-.5)*(x[0]-.5)),.5) && x[2]>=.8-pow((.01*.01)-((x[1]-.7)*(x[1]-.7))-((x[0]-.5)*(x[0]-.5)),.5) ){
+ // f0[0] = 45.0;
+//}else{
+//f0[0] = 4.0;
+//}
+// f0[0] = a[0];
 }
 
 void f0_bd_u(const PetscScalar u[], const PetscScalar gradU[], const PetscScalar a[], const PetscScalar gradA[], const PetscReal x[], const PetscReal n[], PetscScalar f0[])
@@ -214,7 +214,7 @@ void nu_2d(const PetscReal x[], PetscScalar *u, void *ctx)
 
 void test_2d(const PetscReal x[], PetscScalar *u, void *ctx)
 {
-  *u = x[0] + x[1];
+ // *u = x[0] + x[1];
   float p[3],d[3],v0[3],v1[3],v2[3];
   p[0]=x[0];
   p[1]=x[1];
@@ -225,12 +225,12 @@ void test_2d(const PetscReal x[], PetscScalar *u, void *ctx)
   //Read in STL file //
   ifstream myfile;
   myfile.open("martintest.stl");
+  char str1[1],str2[1],str3[1],str4[1];
+  char str5[9];
+
 
   for (int i=0; !myfile.eof();i++){
   
-  char str1[1],str2[1],str3[1],str4[1];
-  char str5[9];
-  float v0[3],v1[3],v2[3];
   myfile>>str1;
   myfile>>str2;
   myfile>>str3;
