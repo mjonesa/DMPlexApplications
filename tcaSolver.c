@@ -210,9 +210,16 @@ void nu_2d(const PetscReal x[], PetscScalar *u, void *ctx)
 void test_2d(const PetscReal x[], PetscScalar *u, void *ctx)
 {
   *u = x[0] + x[1];
-  // set to 42 if inside boundary
-  //if ( StlBoundary(x) )
-  if ( PETSC_TRUE )
+  float p[3],d[3],v0[3],v1[3],v2[3];
+  p[0]=x[0];
+  p[1]=x[1];
+  p[2]=x[2];
+  d[0]=0;
+  d[1]=0;
+  d[2]=1;
+  //Read in STL file //
+  
+  if ( StlBoundary(p,d,v0,v1,v2) )
    {
      *u = 57.;
    }
