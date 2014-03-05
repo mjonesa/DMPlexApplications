@@ -21,6 +21,7 @@ ctags -R --langmap=c++:+.tpp --langmap=c++:+.cu --langmap=c++:+.cl --language-fo
 ./tcaSolver -run_type test -dim 3 -refinement_limit 0.0125 -variable_coefficient field    -interpolate 1 -petscspace_order 2 -show_initial -dm_plex_print_fem
 
 
+
 ------------ Execute with exodus file ------------
 ./tcaSolver -run_type test -dim 3 -variable_coefficient field    -interpolate 1 -petscspace_order 2 -show_initial -dm_plex_print_fem -f LaserModel/meshTemplateFull1.e
 
